@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+[ "$DEBUG" == 'true' ] && set -x
+. "$(dirname $0)/"common.sh
+
+if [ "$1" == '--no-delete-database' ]; then
+    shift;
+    DELETE_DB=false
+else
+    DELETE_DB=true
+fi
+
+DATA_SRC=${DATA_SRC-'/data/'}
+
+wait_couchdb
+
+echo ">>> Loading CouchDB Dumps from from ${DATA_SRC}."
+
+for DUMP in `ls ${DATA_SRC}/*.json.gz`; do
+    DB=$(basename $DUMP | sed 's@.json.gz@@g')
+    if [ "$DELETE_DB" == 'true' ]; then
+        echo -n "Deleting $DB... "
+        curl -X DELETE ${PROTO}://${USER}:${PASS}@${HOST}:${PORT}/${DB}
+        echo "Done."
+    fi
+    echo -n "Loading $DUMP as $DB... "
+    zcat | cdbload -u ${USER} -p ${PASS} -h ${HOST} -P ${PORT} -r ${PROTO} -d ${DB}
+    echo "Done."
+done
+
+echo "Finished."

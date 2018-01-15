@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+[ "$DEBUG" == 'true' ] && set -x
+. "$(dirname $0)/"common.sh
+
+if [ -z "$DUMP_DIR" ]; then
+    echo "DUMP_DIR not set"
+    exit 128
+fi
+
+if [ -z "$1" ]; then
+  echo "DATABASE(s) not specified"
+  exit 128
+else
+    DATABASES=$@
+fi
+
+wait_couchdb
+
+# Perform the dump
+mkdir -p "$DUMP_PATH"
+echo -n "Dumping..."
+for DB in $DATABASES; do
+    echo -n " $DB"
+    cdbdump -u ${USER} -p ${PASS} -h ${HOST} -P ${PORT} -r ${PROTO} -d ${DB} | $GZIP > "${DUMP_DIR}/${DB}.sql.gz"
+done
+echo ". Done."
+
+echo "Done."

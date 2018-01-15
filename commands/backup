@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+set -e -o pipefail
+[ "$DEBUG" == 'true' ] && set -x
+. "$(dirname $0)/"common.sh
+
+if [ -z "$BACKUP_DIR" ]; then
+    echo "BACKUP_DIR not set"
+    exit 128
+fi
+
+if [ -z "$1" ]; then
+    echo "DATABASE(s) not specified"
+    exit 128
+else
+    DATABASES=$@
+fi
+
+wait_couchdb
+
+BACKUP_PATH="${BACKUP_DIR}/$(date +%Y%m%d%H%M)"
+RETENTION_DAYS=${RETENTION_DAYS-14}
+
+# Perform the backup
+mkdir -p "$BACKUP_PATH"
+echo -n "Dumping..."
+for DB in $DATABASES; do
+    echo -n " $DB"
+    cdbdump -u ${USER} -p ${PASS} -h ${HOST} -P ${PORT} -r ${PROTO} -d ${DB} | $GZIP > "${BACKUP_PATH}/${DB}.sql.gz"
+done
+echo ". Done."
+
+# Delete expired backups
+echo -n "Cleanup... "
+find ${BACKUP_DIR} -name "*.sql.gz" -mtime +$RETENTION_DAYS -exec rm -f {} \;
+find ${BACKUP_DIR} -type d -empty -delete
+
+# Link latest backup (done as hardlinks in order to make it easier to backup with rsync)
+echo -n "Linking latest... "
+rm -rf "${BACKUP_DIR}/latest"
+mkdir "${BACKUP_DIR}/latest"
+for B in $BACKUP_PATH/*; do
+    TARGET=$(basename $B)
+    ln $B "${BACKUP_DIR}/latest/$TARGET"
+done
+
+echo "Done."
