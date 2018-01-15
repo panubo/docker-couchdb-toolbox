@@ -6,6 +6,7 @@ A collection of CouchDB tools for automating common tasks in a Docker-centric wa
 
 Documentation for each subcommand:
 
+- [Backup](commands/backup.md)
 - [Dump](commands/dump.md)
 - [Load](commands/load.md)
 

@@ -8,10 +8,10 @@ cat << EOF
 
   Please choose a command:
 
+     backup <databases>
+
      dump <databases>
 
      load <databases>
-
-     backup <databases>
 
 EOF
