@@ -1,15 +1,14 @@
-NAME = panubo/couchdb-toolbox
-VERSION = `git describe --long --tags --dirty --always`
+NAME       := couchdb-toolbox
+TAG        := latest
+IMAGE_NAME := panubo/$(NAME)
 
-.PHONY: all build tag_latest clean
-
-all:    clean build
+.PHONY: build push clean
 
 build:
-	docker build --no-cache -t $(NAME):$(VERSION) .
+	docker build --pull -t $(IMAGE_NAME):$(TAG) .
 
-tag_latest:
-	docker tag -f $(NAME):$(VERSION) $(NAME):latest
+push:
+	docker push $(IMAGE_NAME):$(TAG)
 
 clean:
-	docker images | grep $(NAME) | awk '{ print $$3 }' | xargs -r docker rmi
+	docker rmi $(IMAGE_NAME):$(TAG)
