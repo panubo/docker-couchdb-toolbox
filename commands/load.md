@@ -4,7 +4,7 @@ Command to import CouchDB dumps.
 
 ## Configuration
 
-Use `--link <couchdb container name>:couchdb` to automatically specify the required variables.
+Use `--link <couchdb container name>:link` to automatically specify the required variables.
 
 Alternatively specify the individual variables:
 

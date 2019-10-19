@@ -4,7 +4,7 @@ Command to dump a database.
 
 ## Environment Configuration
 
-Use `--link <couchdb container name>:couchdb` to automatically specify the required variables.
+Use `--link <couchdb container name>:link` to automatically specify the required variables.
 
 Or alternatively specify the individual variables:
 
@@ -25,5 +25,5 @@ Or alternatively specify the individual variables:
 ## Example
 
 ```
-docker run --rm -t -i --link myserver:couchdb -e DUMP_DIR=/data -v /mnt/backup:/data docker.io/panubo/couchdb-toolbox dump db1 db2
+docker run --rm -t -i --link myserver:link -e DUMP_DIR=/data -v /mnt/backup:/data docker.io/panubo/couchdb-toolbox dump db1 db2
 ```

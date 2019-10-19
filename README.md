@@ -14,17 +14,17 @@ Documentation for each subcommand:
 
 Using Docker links to `couchdb` container:
 
-```docker run --rm -i -t --link myserver:couchdb docker.io/panubo/couchdb-toolbox```
+```docker run --rm -i -t --link myserver:link docker.io/panubo/couchdb-toolbox```
 
 This will display the usage information.
 
-```docker run --rm -i -t --link myserver:couchdb docker.io/panubo/couchdb-toolbox <subcommand>```
+```docker run --rm -i -t --link myserver:link docker.io/panubo/couchdb-toolbox <subcommand>```
 
 To run the subcommand.
 
 ## Configuration
 
-Use `--link <couchdb container name>:couchdb` to automatically specify the required variables.
+Use `--link <couchdb container name>:link` to automatically specify the required variables.
 
 Or alternatively specify the variables:
 
