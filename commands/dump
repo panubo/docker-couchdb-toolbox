@@ -19,7 +19,7 @@ fi
 wait_couchdb
 
 # Perform the dump
-mkdir -p "$DUMP_PATH"
+mkdir -p "${DUMP_DIR}"
 echo -n "Dumping..."
 for DB in $DATABASES; do
     echo -n " $DB"
